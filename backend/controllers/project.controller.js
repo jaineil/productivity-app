@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Project from "../models/project.js";
 
 export class ProjectController {
@@ -56,23 +57,25 @@ export class ProjectController {
 		}
 	};
 
-	// fetchPage = async (req, res) => {
-	// 	console.log(req.params);
-	// 	const projectId = req.params.projectId;
-	// 	const pageId = req.params.pageId;
+	fetchPage = async (req, res) => {
+		console.log(req.params);
+		const pageId = req.params.pageId;
 
-	// 	try {
-	// 		const response = await Project.find(
-	// 			{
-	// 				$match: { "pages.id": pageId },
-	// 			},
-	// 			{ pages: 1 }
-	// 		);
-	// 		console.log(JSON.stringify(response));
-	// 		res.status(200).send(response);
-	// 	} catch (err) {
-	// 		console.error("Error => ", err);
-	// 		res.status(500).send("Could not fetch page");
-	// 	}
-	// };
+		try {
+			const response = await Project.aggregate([
+				{ $unwind: "$pages" },
+				{ $match: { "pages._id": mongoose.Types.ObjectId(pageId) } },
+				{
+					$project: {
+						pages: 1,
+					},
+				},
+			]);
+			console.log(JSON.stringify(response));
+			res.status(200).send(response);
+		} catch (err) {
+			console.error("Error => ", err);
+			res.status(500).send("Could not fetch page");
+		}
+	};
 }

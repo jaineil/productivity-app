@@ -10,9 +10,6 @@ projectRoutes.get(
 	projectController.fetchProjectDetails
 );
 projectRoutes.post("/create-page", projectController.createPage);
-// projectRoutes.get(
-// 	"/get-page-details/:projectId/:pageId",
-// 	projectController.fetchPage
-// );
+projectRoutes.get("/get-page-details/:pageId", projectController.fetchPage);
 
 export default projectRoutes;
