@@ -78,4 +78,36 @@ export class ProjectController {
 			res.status(500).send("Could not fetch page");
 		}
 	};
+
+	updatePage = async (req, res) => {
+		console.log(req.body);
+		const pageId = req.body.pageId;
+		const updatedPageObject = {
+			title: req.body.title,
+			body: req.body.body,
+		};
+
+		try {
+			const response = await Project.findOneAndUpdate(
+				{ "pages._id": mongoose.Types.ObjectId(pageId) },
+				{
+					$set: {
+						"pages.$[page].title": updatedPageObject.title,
+						"pages.$[page].body": updatedPageObject.body,
+					},
+				},
+				{
+					arrayFilters: [
+						{ "page._id": mongoose.Types.ObjectId(pageId) },
+					],
+					new: true,
+				}
+			);
+			console.log(JSON.stringify(response));
+			res.status(200).send(response);
+		} catch (err) {
+			console.error("Error => ", err);
+			res.status(500).send("Could not update page");
+		}
+	};
 }
