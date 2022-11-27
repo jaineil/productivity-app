@@ -3,11 +3,12 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
+import userRoutes from "./routes/user.routes.js";
 
 const user = "testUser";
 const password = "testPass";
 const frontendIP = "localhost";
-const sessionSecretKey = "cmpe280_hackathon";
+const sessionSecretKey = "cmpe280_term_project";
 const uri = `mongodb+srv://${user}:${password}@cluster0.xljkdkp.mongodb.net/productivityApp?retryWrites=true&w=majority`;
 
 const app = express();
@@ -30,6 +31,8 @@ app.use(
 		extended: false,
 	})
 );
+
+app.use(userRoutes);
 
 try {
 	mongoose.connect(uri, {
