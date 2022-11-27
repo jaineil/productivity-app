@@ -6,7 +6,8 @@ const projectSchema = new Schema({
 	name: { type: String },
 	description: { type: String },
 	ownerId: {
-		type: String,
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "user",
 	},
 	collaborators: {
 		type: [
