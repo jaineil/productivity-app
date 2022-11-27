@@ -1,3 +1,4 @@
+import { response } from "express";
 import User from "../models/user.js";
 
 export class UserController {
@@ -16,6 +17,37 @@ export class UserController {
 		} catch (err) {
 			console.error("Error => ", err);
 			res.status(500).send("Could not create new User");
+		}
+	};
+
+	validateUserLogin = async (req, res) => {
+		console.log(req.body);
+		const email = req.body.email;
+		const password = req.body.password;
+
+		try {
+			const response = await User.findOne({ email: email });
+			console.log("Fetched user => ", JSON.stringify(response));
+
+			if (response.password !== password) {
+				console.log("Password mismatch");
+				res.status(400).send({ validCredentials: false });
+			} else {
+				const userId = response.id;
+				console.log(userId);
+				res.cookie("userId", userId, {
+					maxAge: 3600000,
+					httpOnly: false,
+					path: "/",
+				});
+				req.session.user = userId;
+				res.status(200).send({
+					validCredentials: true,
+				});
+			}
+		} catch (err) {
+			console.error("Error => ", err);
+			res.status(500).send("Could not validate User");
 		}
 	};
 }
