@@ -7,7 +7,7 @@ import session from "express-session";
 const user = "testUser";
 const password = "testPass";
 const frontendIP = "localhost";
-const sessionSecretKey = "cmpe280_hackathon";
+const sessionSecretKey = "cmpe280_term_project";
 const uri = `mongodb+srv://${user}:${password}@cluster0.xljkdkp.mongodb.net/productivityApp?retryWrites=true&w=majority`;
 
 const app = express();
