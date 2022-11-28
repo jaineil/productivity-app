@@ -1,7 +1,8 @@
-import React, {useState, useRef} from "react";
+import React, {useState, useRef, useEffect} from "react";
 import {Button, Container, Row, Col} from "react-bootstrap";
 import {createReactEditorJS} from "react-editor-js";
 import ReactDOM from "react-dom";
+import axios from "axios";
 
 import Embed from "@editorjs/embed";
 import Table from "@editorjs/table";
@@ -18,6 +19,8 @@ import CheckList from "@editorjs/checklist";
 import Delimiter from "@editorjs/delimiter";
 import InlineCode from "@editorjs/inline-code";
 import SimpleImage from "@editorjs/simple-image";
+
+import {BASE_URL, ENDPOINT_MAPPINGS} from "../utils/config";
 
 const EDITOR_JS_TOOLS = {
 	embed: Embed,
@@ -39,31 +42,36 @@ const EDITOR_JS_TOOLS = {
 
 const ReactEditorJS = createReactEditorJS();
 
-const Editor = () => {
-	const [editorValue, setEditorValue] = useState({
-		time: new Date().getTime(),
-		blocks: [
-			{
-				type: "header",
-				data: {
-					text: "Testing title",
-					level: 2,
-				},
+const editorDefaultValue = {
+	time: new Date().getTime(),
+	blocks: [
+		{
+			id: "Mfafaffdsg",
+			type: "paragraph",
+			data: {
+				text: "start typing here ...",
 			},
-			{
-				type: "paragraph",
-				data: {
-					text: "We have been working on this project more than three years. Several large media projects help us to test and debug the Editor, to make it's core more stable. At the same time we significantly improved the API. Now, it can be used to create any plugin for any task. Hope you enjoy. 😏",
-				},
-			},
-		],
-	});
+		},
+	],
+	version: "2.25.0",
+};
 
-	const instanceRef = React.useRef(null);
+const Editor = () => {
+	const [editorValue, setEditorValue] = useState(editorDefaultValue);
+
+	const instanceRef = useRef(null);
 	async function handleSave() {
 		const savedData = await instanceRef.current.save();
 		setEditorValue(savedData);
 	}
+
+	const getPage = async () => {
+		const response = await axios.get(
+			`${BASE_URL}${ENDPOINT_MAPPINGS.getPageDetails}/`
+		);
+	};
+
+	useEffect(() => {}, []);
 
 	console.log("Rendering");
 	console.log(editorValue);
@@ -71,7 +79,7 @@ const Editor = () => {
 		<ReactEditorJS
 			onInitialize={(instance) => (instanceRef.current = instance)}
 			tools={EDITOR_JS_TOOLS}
-			data={{editorValue}}
+			defaultValue={editorValue}
 			onChange={handleSave}
 		/>
 	);

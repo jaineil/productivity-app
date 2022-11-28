@@ -9,8 +9,8 @@ const ProjectView = () => {
 			<Row>
 				<Col
 					xs={2}
-					className="border-end border-dark border-2"
-					style={{height: "100vh"}}>
+					className="border-end border-dark border-2 pt-5"
+					style={{height: "100%"}}>
 					<div style={{height: "90vh"}}>
 						<Row className="my-2 px-2">
 							<p className="text-center fs-6">Master Project</p>
@@ -30,7 +30,7 @@ const ProjectView = () => {
 					</Row>
 				</Col>
 				<Col xs={10}>
-					<Row>
+					<Row className="mx-3 my-2 pt-3">
 						<p className="display-4">Master Project</p>
 					</Row>
 					<Editor />
