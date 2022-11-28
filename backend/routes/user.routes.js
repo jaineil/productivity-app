@@ -6,6 +6,9 @@ const userController = new UserController();
 
 userRoutes.post("/create-user", userController.createUser);
 userRoutes.post("/login", userController.validateUserLogin);
-// get all projects
+userRoutes.get(
+	"/get-all-projects/:userId",
+	userController.fetchAllUserProjects
+);
 
 export default userRoutes;

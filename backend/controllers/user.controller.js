@@ -49,4 +49,19 @@ export class UserController {
 			res.status(500).send("Could not validate User");
 		}
 	};
+
+	fetchAllUserProjects = async (req, res) => {
+		console.log(req.params);
+		const userId = req.params.userId;
+		try {
+			const response = await User.findById(userId).populate(
+				"projects.projectId"
+			);
+			console.log(JSON.stringify(response));
+			res.status(200).send(response);
+		} catch (err) {
+			console.error("Error => ", err);
+			res.status(500).send("Could not fetch projects for user");
+		}
+	};
 }
