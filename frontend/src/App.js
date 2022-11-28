@@ -10,7 +10,12 @@ function App() {
 		<div className="App">
 			<Routes>
 				<Route path="/login" element={<Authentication />} />
-				<Route path="/project" element={<ProjectView />} />
+				<Route
+					path="/project"
+					element={
+						<ProjectView projectId={"6384172f9750e0c6d9ccc6a0"} />
+					}
+				/>
 				<Route index path="/" element={<Landing />} />
 			</Routes>
 			{/* <Navbar /> */}
