@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Project from "../models/project.js";
+import User from "../models/user.js";
 
 export class ProjectController {
 	createProject = async (req, res) => {
@@ -11,14 +12,40 @@ export class ProjectController {
 			collaborators: [],
 			pages: [],
 		});
+
+		const session = await mongoose.connection.startSession();
+
 		try {
-			const response = await newProjectObject.save();
-			console.log(JSON.stringify(response));
-			res.status(200).send(response);
+			session.startTransaction();
+
+			const createProjectResponse = await newProjectObject.save({
+				session,
+			});
+			console.log(JSON.stringify(createProjectResponse));
+
+			const addProjectToOwnerResponse = await User.findByIdAndUpdate(
+				newProjectObject.ownerId,
+				{
+					$push: {
+						projects: { projectId: createProjectResponse.id },
+					},
+				},
+				{ session }
+			);
+			console.log(JSON.stringify(addProjectToOwnerResponse));
+
+			await session.commitTransaction();
+			console.log("Successful transaction");
+
+			res.status(200).send(createProjectResponse);
 		} catch (err) {
+			console.log("Error in transaction, rolling back");
+			await session.abortTransaction();
 			console.error("Error => ", err);
 			res.status(500).send("Could not create new Project");
 		}
+
+		session.endSession();
 	};
 
 	fetchProjectDetails = async (req, res) => {
@@ -109,5 +136,57 @@ export class ProjectController {
 			console.error("Error => ", err);
 			res.status(500).send("Could not update page");
 		}
+	};
+
+	addCollaborator = async (req, res) => {
+		console.log(req.body);
+		const projectId = req.body.projectId;
+
+		const collaboratorEmail = req.body.collaboratorEmail;
+		const permissions = req.body.permissions;
+
+		const session = await mongoose.connection.startSession();
+
+		try {
+			session.startTransaction();
+
+			const projectAddedToCollaboratorResponse = await User.updateOne(
+				{ email: collaboratorEmail },
+				{ $push: { projects: { projectId: projectId } } },
+				{ session }
+			);
+			console.log(JSON.stringify(projectAddedToCollaboratorResponse));
+
+			const collaborator = await User.findOne({
+				email: collaboratorEmail,
+			});
+			const collaboratorId = collaborator.id;
+
+			const collaboratorAddedToProjectResponse = await Project.updateOne(
+				{ _id: projectId },
+				{
+					$push: {
+						collaborators: {
+							userId: collaboratorId,
+							permissions: permissions,
+						},
+					},
+				},
+				{ session }
+			);
+			console.log(JSON.stringify(collaboratorAddedToProjectResponse));
+
+			await session.commitTransaction();
+			console.log("Successful transaction");
+
+			res.status(200).send("OK");
+		} catch (err) {
+			console.log("Error in transaction, rolling back");
+			await session.abortTransaction();
+			console.error("Error => ", err);
+			res.status(500).send("Could not add collaborator correctly");
+		}
+
+		session.endSession();
 	};
 }

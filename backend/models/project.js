@@ -23,7 +23,6 @@ const projectSchema = new Schema({
 	pages: {
 		type: [
 			{
-				pageId: { type: mongoose.Schema.Types.ObjectId },
 				title: { type: String },
 				body: { type: String },
 			},

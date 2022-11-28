@@ -12,5 +12,6 @@ projectRoutes.get(
 projectRoutes.post("/create-page", projectController.createPage);
 projectRoutes.get("/get-page-details/:pageId", projectController.fetchPage);
 projectRoutes.post("/update-page", projectController.updatePage);
+projectRoutes.post("/add-collaborator", projectController.addCollaborator);
 
 export default projectRoutes;
