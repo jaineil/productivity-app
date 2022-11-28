@@ -189,4 +189,19 @@ export class ProjectController {
 
 		session.endSession();
 	};
+
+	fetchCollaboratorsForProject = async (req, res) => {
+		console.log(req.params);
+		const projectId = req.params.projectId;
+		try {
+			const response = await Project.findById(projectId).populate(
+				"collaborators.userId"
+			);
+			console.log(JSON.stringify(response));
+			res.status(200).send(response);
+		} catch (err) {
+			console.error("Error => ", err);
+			res.status(500).send("Could not fetch collaborators for project");
+		}
+	};
 }
