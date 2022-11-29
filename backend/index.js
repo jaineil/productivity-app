@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import userRoutes from "./routes/user.routes.js";
+import projectRoutes from "./routes/project.routes.js";
 
 const user = "testUser";
 const password = "testPass";
@@ -33,6 +34,7 @@ app.use(
 );
 
 app.use(userRoutes);
+app.use(projectRoutes);
 
 try {
 	mongoose.connect(uri, {

@@ -6,7 +6,8 @@ const projectSchema = new Schema({
 	name: { type: String },
 	description: { type: String },
 	ownerId: {
-		type: String,
+		type: mongoose.Schema.Types.ObjectId,
+		ref: "user",
 	},
 	collaborators: {
 		type: [
@@ -22,7 +23,6 @@ const projectSchema = new Schema({
 	pages: {
 		type: [
 			{
-				pageId: { type: mongoose.Schema.Types.ObjectId },
 				title: { type: String },
 				body: { type: String },
 			},
