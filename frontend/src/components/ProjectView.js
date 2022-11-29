@@ -1,10 +1,31 @@
 import React, {useEffect, useState} from "react";
-import {Container, Row, Col} from "react-bootstrap";
+import {
+	Container,
+	Row,
+	Col,
+	Dropdown,
+	Form,
+	Button,
+	Modal,
+} from "react-bootstrap";
 import {ENDPOINT_MAPPINGS} from "../utils/config";
-import {makeGetRequest} from "../utils/makeRequest";
-import Editor from "./Editor";
+import {makeGetRequest, makePostRequest} from "../utils/makeRequest";
 import {BsFillPeopleFill} from "react-icons/bs";
-import Dropdown from "react-bootstrap/Dropdown";
+import PageView from "./PageView";
+
+const defaultPageBody = {
+	time: new Date().getTime(),
+	blocks: [
+		{
+			id: "Mfafaffdsg",
+			type: "paragraph",
+			data: {
+				text: "start typing here ...",
+			},
+		},
+	],
+	version: "2.25.0",
+};
 
 const ProjectView = ({projectId}) => {
 	const [projectName, setProjectName] = useState("");
@@ -12,6 +33,46 @@ const ProjectView = ({projectId}) => {
 	const [owner, setOwner] = useState([]);
 	const [pages, setPages] = useState([]);
 	const [collaborators, setCollaborators] = useState([]);
+	const [activePageId, setActivePageId] = useState("");
+	const [showModal, setShowModal] = useState(false);
+	const [newPageTitle, setNewPageTitle] = useState("");
+	const [showCollabModal, setShowCollabModal] = useState(false);
+	const [collaboratorEmail, setCollaboratorEmail] = useState("");
+
+	const handleClose = () => {
+		setShowModal(false);
+	};
+
+	const handleShow = () => {
+		setShowModal(true);
+	};
+
+	const handleCloseCollab = () => {
+		setShowCollabModal(false);
+	};
+
+	const handleShowCollab = () => {
+		setShowCollabModal(true);
+	};
+
+	const handleAddCollaborator = async () => {
+		await makePostRequest(ENDPOINT_MAPPINGS.addCollaborator, {
+			projectId: projectId,
+			collaboratorEmail: collaboratorEmail,
+			permissions: "all",
+		});
+		setShowCollabModal(false);
+		getCollaborators();
+	};
+	const handleAddNewPage = async () => {
+		await makePostRequest(ENDPOINT_MAPPINGS.createPage, {
+			projectId: projectId,
+			title: newPageTitle,
+			body: JSON.stringify(defaultPageBody),
+		});
+		setShowModal(false);
+		setProjectName(projectName + " ");
+	};
 
 	const getProjectDetails = async () => {
 		const project = await makeGetRequest(
@@ -23,6 +84,19 @@ const ProjectView = ({projectId}) => {
 			setDescription(project.description);
 			setOwner([project["ownerId"]["email"]]);
 			setPages(project.pages);
+			console.log("TEST");
+			console.log(project.pages);
+			if (
+				!project.pages.some(
+					(page) => page._id === localStorage.getItem("activePageId")
+				)
+			) {
+				localStorage.setItem(
+					"activePageId",
+					project.pages[project.pages.length - 1]._id
+				);
+			}
+			setActivePageId(localStorage.getItem("activePageId"));
 		}
 	};
 
@@ -39,11 +113,19 @@ const ProjectView = ({projectId}) => {
 			);
 		}
 	};
+
+	const switchToPage = async (newPageId) => {
+		localStorage.setItem("activePageId", newPageId);
+		// setActivePageId(newPageId);
+		window.location.reload();
+	};
+
 	useEffect(() => {
 		getProjectDetails();
 		getCollaborators();
-	}, []);
-	console.log("COLL");
+	}, [projectName]);
+	console.log("Rendering [ProjectView]");
+	// console.log(activePageId);
 	return (
 		<Container fluid>
 			<Row>
@@ -60,12 +142,19 @@ const ProjectView = ({projectId}) => {
 							<p className="text-center fs-6">
 								<Dropdown>
 									<Dropdown.Toggle
-										variant=""
+										variant="dark"
 										id="dropdown-basic">
 										<BsFillPeopleFill /> View Collaborators
 									</Dropdown.Toggle>
+									<Button
+										className="mx-2"
+										variant="outline-success"
+										onClick={handleShowCollab}
+										style={{width: "80px"}}>
+										+ Add
+									</Button>
 
-									<Dropdown.Menu>
+									<Dropdown.Menu variant="dark">
 										{[...owner, ...collaborators]?.map(
 											(collaborator) => {
 												return (
@@ -79,30 +168,92 @@ const ProjectView = ({projectId}) => {
 								</Dropdown>
 							</p>
 						</Row>
-						<Row className="my-2 px-2">
-							<p className="text-center fs-6">Master Project</p>
-						</Row>
-						<Row className="my-2 px-2">
-							<p className="text-center fs-6">System Design</p>
-						</Row>
-						<Row className="my-2 px-2">
-							<p className="text-center fs-6">Leetcode</p>
-						</Row>
-						<Row className="my-2 px-2">
-							<p className="text-center fs-6">Web UI Design</p>
-						</Row>
+						{pages?.map((page) => {
+							return (
+								<Row className="my-2 px-2 text-center fs-6">
+									<Button
+										variant="outline-dark"
+										id={page._id}
+										onClick={(e) => {
+											switchToPage(e.target.id);
+										}}>
+										{page.title}
+									</Button>
+								</Row>
+							);
+						})}
 					</div>
 					<Row className="my-2 px-2 py-3 border-top border-dark border-1">
-						<p className="text-center fs-5">+ New Page</p>
+						{/* <p className="text-center fs-5">+ New Page</p> */}
+						<Button variant="success" onClick={handleShow}>
+							+ New Page
+						</Button>
 					</Row>
 				</Col>
 				<Col xs={10}>
-					<Row className="mx-3 my-2 pt-3">
-						<p className="display-4">Master Project</p>
-					</Row>
-					<Editor />
+					<PageView activePageId={activePageId} />
 				</Col>
 			</Row>
+			<Modal show={showModal} onHide={handleClose}>
+				<Modal.Header closeButton>
+					<Modal.Title>Create new page</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form>
+						<Form.Group
+							className="mb-3"
+							controlId="exampleForm.ControlInput1">
+							<Form.Label>Page Title:</Form.Label>
+							<Form.Control
+								placeholder="Eg: Master Project"
+								autoFocus
+								onChange={(e) =>
+									setNewPageTitle(e.target.value)
+								}
+							/>
+						</Form.Group>
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={handleClose}>
+						Close
+					</Button>
+					<Button variant="primary" onClick={handleAddNewPage}>
+						Confirm
+					</Button>
+				</Modal.Footer>
+			</Modal>
+			<Modal show={showCollabModal} onHide={handleCloseCollab}>
+				<Modal.Header closeButton>
+					<Modal.Title>
+						Add new collaborator to your project
+					</Modal.Title>
+				</Modal.Header>
+				<Modal.Body>
+					<Form>
+						<Form.Group
+							className="mb-3"
+							controlId="exampleForm.ControlInput1">
+							<Form.Label>Collaborator Email:</Form.Label>
+							<Form.Control
+								placeholder="Eg: john.doe@sjsu.edu"
+								autoFocus
+								onChange={(e) =>
+									setCollaboratorEmail(e.target.value)
+								}
+							/>
+						</Form.Group>
+					</Form>
+				</Modal.Body>
+				<Modal.Footer>
+					<Button variant="secondary" onClick={handleCloseCollab}>
+						Close
+					</Button>
+					<Button variant="primary" onClick={handleAddCollaborator}>
+						Confirm
+					</Button>
+				</Modal.Footer>
+			</Modal>
 		</Container>
 	);
 };

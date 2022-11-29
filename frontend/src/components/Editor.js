@@ -42,7 +42,7 @@ const EDITOR_JS_TOOLS = {
 
 const ReactEditorJS = createReactEditorJS();
 
-const editorDefaultValue = {
+const defaultPageBody = {
 	time: new Date().getTime(),
 	blocks: [
 		{
@@ -56,32 +56,28 @@ const editorDefaultValue = {
 	version: "2.25.0",
 };
 
-const Editor = () => {
-	const [editorValue, setEditorValue] = useState(editorDefaultValue);
-
+const Editor = ({activePageId, editorValue, updateEditorValue}) => {
 	const instanceRef = useRef(null);
-	async function handleSave() {
-		const savedData = await instanceRef.current.save();
-		setEditorValue(savedData);
-	}
 
-	const getPage = async () => {
-		const response = await axios.get(
-			`${BASE_URL}${ENDPOINT_MAPPINGS.getPageDetails}/`
-		);
+	const handleAutoSave = async () => {
+		const savedData = await instanceRef.current.save();
+		updateEditorValue(savedData);
 	};
 
-	useEffect(() => {}, []);
-
-	console.log("Rendering");
+	useEffect(() => {
+		console.log("NEW PAGE");
+	}, [activePageId]);
+	console.log("RENDERING");
 	console.log(editorValue);
 	return (
-		<ReactEditorJS
-			onInitialize={(instance) => (instanceRef.current = instance)}
-			tools={EDITOR_JS_TOOLS}
-			defaultValue={editorValue}
-			onChange={handleSave}
-		/>
+		<>
+			<ReactEditorJS
+				onInitialize={(instance) => (instanceRef.current = instance)}
+				tools={EDITOR_JS_TOOLS}
+				defaultValue={editorValue}
+				onChange={handleAutoSave}
+			/>
+		</>
 	);
 };
 
