@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import ProjectCard from "./ProjectCard";
 
 const ProjectsGrid = () => {
-	const x = [1, 2, 3, 4, 4, 3, 2, 1, 2, 12];
+	const x = [1, 2, 3, 4, 49, 37, 52, 13, 21, 12];
 	return (
 		<Box
 			sx={{
@@ -16,9 +16,8 @@ const ProjectsGrid = () => {
 					height: "20rem",
 				},
 			}}>
-			{/* <Paper elevation={4} /> */}
 			{x.map((i) => {
-				return <ProjectCard />;
+				return <ProjectCard key={i} />;
 			})}
 		</Box>
 	);

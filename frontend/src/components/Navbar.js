@@ -89,8 +89,9 @@ function Navbar() {
 			style={{
 				backgroundColor: "black",
 				boxShadow: "10px 10px 10px silver",
+				padding: "8px",
 			}}>
-			<Container maxWidth="xl">
+			<Container maxWidth="xxl">
 				<Toolbar disableGutters>
 					<div
 						style={{
@@ -98,7 +99,7 @@ function Navbar() {
 							width: "100%",
 							alignItems: "center",
 						}}>
-						<div>
+						<div className="logo-nav" style={{display: "flex"}}>
 							<img
 								width="120px"
 								style={{padding: "10px", borderRadius: "30px"}}
@@ -117,8 +118,13 @@ function Navbar() {
 									fontWeight: 500,
 									letterSpacing: ".3rem",
 									color: "inherit",
+									paddingTop: "20px",
 									textDecoration: "none",
-								}}></Typography>
+									flexDirection: "column",
+								}}>
+								<div>PROD</div>
+								<div>APP</div>
+							</Typography>
 						</div>
 						<div
 							style={{

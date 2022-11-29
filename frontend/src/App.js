@@ -8,7 +8,7 @@ function App() {
 	return (
 		<div className="App">
 			{/* <Authentication /> */}
-			<ProjectView />
+			{/* <ProjectView />z */}
 			<Navbar />
 			<Landing />
 		</div>
