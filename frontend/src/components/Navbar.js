@@ -15,6 +15,8 @@ import AdbIcon from "@mui/icons-material/Adb";
 import SearchIcon from "@mui/icons-material/Search";
 import {styled, alpha} from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
+import {Link, useNavigate} from "react-router-dom";
+import {useCookies} from "react-cookie";
 
 const Search = styled("div")(({theme}) => ({
 	position: "relative",
@@ -61,12 +63,26 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 	},
 }));
 
-const pages = [""];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
-
 function Navbar() {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		removeCookie("userId");
+		navigate("/login");
+	};
+
+	const handleViewProfile = () => {
+		console.log("Dummy Page");
+	};
+	const pages = [""];
+	const settings = [
+		{option: "Profile", action: handleViewProfile},
+		{option: "Logout", action: handleLogout},
+	];
+
+	const [cookies, setCookie, removeCookie] = useCookies();
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
@@ -265,10 +281,10 @@ function Navbar() {
 									onClose={handleCloseUserMenu}>
 									{settings.map((setting) => (
 										<MenuItem
-											key={setting}
-											onClick={handleCloseUserMenu}>
+											key={setting.option}
+											onClick={setting.action}>
 											<Typography textAlign="center">
-												{setting}
+												{setting.option}
 											</Typography>
 										</MenuItem>
 									))}

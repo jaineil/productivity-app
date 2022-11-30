@@ -1,13 +1,31 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {loadCSS} from "fg-loadcss";
 import ProjectsGrid from "./ProjectsGrid";
 import Icon from "@mui/material/Icon";
 import {Box} from "@mui/material";
 import Tooltip from "@mui/material/Tooltip";
 import CreateProjectModal from "./CreateProjectModal";
+import {makeGetRequest, makePostRequest} from "../utils/makeRequest";
+import {ENDPOINT_MAPPINGS} from "../utils/config";
+import {useCookies} from "react-cookie";
 
 const Landing = () => {
-	React.useEffect(() => {
+	const [modalShow, setModalShow] = useState(false);
+	const [title, setTitle] = useState();
+	const [description, setDescription] = useState();
+	const [projects, setProjects] = useState([]);
+	const [cookies, setCookie] = useCookies(["userId"]);
+	const handleTitleChange = (e) => {
+		console.log(e.target.value);
+		setTitle(e.target.value);
+	};
+
+	const handleDescriptionChange = (e) => {
+		console.log(e.target.value);
+		setDescription(e.target.value);
+	};
+
+	useEffect(() => {
 		const node = loadCSS(
 			"https://use.fontawesome.com/releases/v5.14.0/css/all.css",
 			// Inject before JSS
@@ -20,17 +38,34 @@ const Landing = () => {
 		};
 	}, []);
 
-	const [modalShow, setModalShow] = React.useState(false);
-	const [title, setTitle] = React.useState();
-	const [description, setDescription] = React.useState();
-
-	const handleTitleChange = (e) => {
-		setTitle(e.target.value);
+	const getProjects = async () => {
+		const res = await makeGetRequest(ENDPOINT_MAPPINGS.getAllProjects, [
+			cookies.userId,
+		]);
+		if (res) {
+			setProjects(res?.projects);
+		}
 	};
 
-	const handleDescriptionChange = (e) => {
-		setDescription(e.target.value);
+	const createProject = async () => {
+		const res = await makePostRequest(ENDPOINT_MAPPINGS.createProject, {
+			name: title,
+			description: description,
+			ownerId: cookies.userId,
+		});
+
+		console.log(res);
+
+		setModalShow(false);
+		setTitle("");
+		setDescription("");
+
+		getProjects();
 	};
+
+	useEffect(() => {
+		getProjects();
+	}, []);
 
 	return (
 		<div className="landing-wrapper container">
@@ -66,10 +101,19 @@ const Landing = () => {
 					handleTitleChange={handleTitleChange}
 					description={description}
 					handleDescriptionChange={handleDescriptionChange}
+					createProject={createProject}
 				/>
 			</div>
 			<div className="grid-wrapper">
-				<ProjectsGrid />
+				{projects?.length === 0 ? (
+					<div>
+						{" "}
+						You do not have any Projects. Get started by creating
+						one using the new project button.{" "}
+					</div>
+				) : (
+					<ProjectsGrid projects={projects} />
+				)}
 			</div>
 		</div>
 	);

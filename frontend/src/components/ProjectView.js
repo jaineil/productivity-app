@@ -6,12 +6,14 @@ import Editor from "./Editor";
 import {BsFillPeopleFill} from "react-icons/bs";
 import Dropdown from "react-bootstrap/Dropdown";
 
-const ProjectView = ({projectId}) => {
+const ProjectView = ({match}) => {
 	const [projectName, setProjectName] = useState("");
 	const [description, setDescription] = useState("");
 	const [owner, setOwner] = useState([]);
 	const [pages, setPages] = useState([]);
 	const [collaborators, setCollaborators] = useState([]);
+
+	const projectId = match?.params?.id;
 
 	const getProjectDetails = async () => {
 		const project = await makeGetRequest(

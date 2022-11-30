@@ -13,7 +13,7 @@ const sessionSecretKey = "cmpe280_term_project";
 const uri = `mongodb+srv://${user}:${password}@cluster0.xljkdkp.mongodb.net/productivityApp?retryWrites=true&w=majority`;
 
 const app = express();
-app.use(cors({ origin: `http://${frontendIP}:3000`, credentials: true }));
+app.use(cors({origin: `http://${frontendIP}:3000`, credentials: true}));
 app.use(cookieParser());
 
 app.use(

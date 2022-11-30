@@ -22,6 +22,8 @@ const CreateProjectModal = (props) => {
 							type="text"
 							placeholder="Title"
 							autoFocus
+							value={props.title}
+							onChange={props.handleTitleChange}
 						/>
 					</Form.Group>
 					<Form.Group
@@ -32,6 +34,8 @@ const CreateProjectModal = (props) => {
 							as="textarea"
 							placeholder="Description"
 							rows={5}
+							value={props.description}
+							onChange={props.handleDescriptionChange}
 						/>
 					</Form.Group>
 				</Form>
@@ -39,7 +43,7 @@ const CreateProjectModal = (props) => {
 			{/* <div style={{width: "100%"}}> */}
 			<Button
 				style={{padding: "10px", width: "30%", alignSelf: "center"}}
-				onClick={props.onHide}>
+				onClick={props.createProject}>
 				{" "}
 				Create
 			</Button>
