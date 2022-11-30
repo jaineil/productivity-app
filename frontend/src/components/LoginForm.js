@@ -1,14 +1,40 @@
 import React, {useState} from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import {ENDPOINT_MAPPINGS} from "../utils/config";
+import {makePostRequest} from "../utils/makeRequest";
+import toast, {Toaster} from "react-hot-toast";
+// import {useCookies} from "react-cookie";
+import {Link, useNavigate} from "react-router-dom";
 
 const LoginForm = () => {
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
+	// const [cookies, setCookie] = useCookies(["name"]);
+	const navigate = useNavigate();
 
-	const login = async () => {
-		// axios call to login api
-		//redirect to landing page
+	const success = async (msg) =>
+		toast.success(msg, {
+			duration: 6000,
+		});
+	const error = async (msg) =>
+		toast.error(msg, {
+			duration: 6000,
+		});
+
+	const loginUser = async () => {
+		const user = await makePostRequest(ENDPOINT_MAPPINGS.login, {
+			email: email,
+			password: password,
+		});
+
+		if (user) {
+			success("Sucessfully Authenticated");
+			// setCookie("userId", user.userId);
+			navigate("/");
+		} else {
+			error("Incorrect Credentials");
+		}
 	};
 
 	const handleEmailChange = (e) => {
@@ -21,8 +47,9 @@ const LoginForm = () => {
 
 	return (
 		<div className="login-wrapper">
+			<Toaster position="top-center" reverseOrder={false} />
 			<Form>
-				<Form.Group className="mb-3" controlId="formBasicEmail">
+				<Form.Group className="mb-3" controlId="loginformBasicEmail">
 					<Form.Label>Email address</Form.Label>
 					<Form.Control
 						type="email"
@@ -35,7 +62,7 @@ const LoginForm = () => {
 					</Form.Text>
 				</Form.Group>
 
-				<Form.Group className="mb-3" controlId="formBasicPassword">
+				<Form.Group className="mb-3" controlId="loginformBasicPassword">
 					<Form.Label>Password</Form.Label>
 					<Form.Control
 						type="password"
@@ -44,10 +71,10 @@ const LoginForm = () => {
 						onChange={handlePasswordChange}
 					/>
 				</Form.Group>
-				<Button variant="primary" type="submit">
-					Submit
-				</Button>
 			</Form>
+			<Button variant="primary" type="button" onClick={loginUser}>
+				Login
+			</Button>
 		</div>
 	);
 };

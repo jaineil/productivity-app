@@ -7,8 +7,8 @@ export const makeGetRequest = async (routePath, paramList) => {
 		requestUrl += `/${param}`;
 	}
 	try {
-		const response = await axios.get(requestUrl);
 		console.log(`Fetched response for API request: ${requestUrl}`);
+		const response = await axios.get(requestUrl, {withCredentials: true});
 		console.log(response.data);
 		return response.data;
 	} catch (err) {
@@ -20,7 +20,9 @@ export const makeGetRequest = async (routePath, paramList) => {
 export const makePostRequest = async (routePath, paramObj) => {
 	let requestUrl = `${BASE_URL}${routePath}`;
 	try {
-		const response = await axios.post(requestUrl, paramObj);
+		const response = await axios.post(requestUrl, paramObj, {
+			withCredentials: true,
+		});
 		console.log(`Fetched response for API request: ${requestUrl}`);
 		console.log(response.data);
 		return response.data;

@@ -1,6 +1,9 @@
 import React, {useState} from "react";
 import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
+import {ENDPOINT_MAPPINGS} from "../utils/config";
+import {makePostRequest} from "../utils/makeRequest";
+import toast, {Toaster} from "react-hot-toast";
 
 const SignUpForm = () => {
 	const [firstName, setFirstName] = useState();
@@ -8,9 +11,22 @@ const SignUpForm = () => {
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
 
-	const login = async () => {
-		// axios call to login api
-		//redirect to landing page
+	const success = (msg) => toast.success(msg);
+	const error = (msg) => toast.error(msg);
+
+	const createUser = async () => {
+		const res = await makePostRequest(ENDPOINT_MAPPINGS.createUser, {
+			name: firstName + " " + lastName,
+			email: email,
+			password: password,
+		});
+		if (res) {
+			console.log("New user created");
+			success("New user created");
+		} else {
+			console.log("Could not create user. Please try again");
+			error("Could not create user. Please try again");
+		}
 	};
 
 	const handleEmailChange = (e) => {
@@ -71,9 +87,10 @@ const SignUpForm = () => {
 						onChange={handlePasswordChange}
 					/>
 				</Form.Group>
-				<Button variant="primary" type="submit">
+				<Button variant="primary" type="button" onClick={createUser}>
 					Create Account
 				</Button>
+				<Toaster />
 			</Form>
 		</div>
 	);

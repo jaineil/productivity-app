@@ -15,6 +15,8 @@ import AdbIcon from "@mui/icons-material/Adb";
 import SearchIcon from "@mui/icons-material/Search";
 import {styled, alpha} from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
+import {Link, useNavigate} from "react-router-dom";
+import {useCookies} from "react-cookie";
 
 const Search = styled("div")(({theme}) => ({
 	position: "relative",
@@ -61,12 +63,26 @@ const StyledInputBase = styled(InputBase)(({theme}) => ({
 	},
 }));
 
-const pages = [""];
-const settings = ["Profile", "Account", "Dashboard", "Logout"];
-
 function Navbar() {
 	const [anchorElNav, setAnchorElNav] = React.useState(null);
 	const [anchorElUser, setAnchorElUser] = React.useState(null);
+	const navigate = useNavigate();
+
+	const handleLogout = () => {
+		removeCookie("userId");
+		navigate("/login");
+	};
+
+	const handleViewProfile = () => {
+		console.log("Dummy Page");
+	};
+	const pages = [""];
+	const settings = [
+		{option: "Profile", action: handleViewProfile},
+		{option: "Logout", action: handleLogout},
+	];
+
+	const [cookies, setCookie, removeCookie] = useCookies();
 
 	const handleOpenNavMenu = (event) => {
 		setAnchorElNav(event.currentTarget);
@@ -89,8 +105,9 @@ function Navbar() {
 			style={{
 				backgroundColor: "black",
 				boxShadow: "10px 10px 10px silver",
+				padding: "8px",
 			}}>
-			<Container maxWidth="xl">
+			<Container maxWidth="xxl">
 				<Toolbar disableGutters>
 					<div
 						style={{
@@ -98,7 +115,7 @@ function Navbar() {
 							width: "100%",
 							alignItems: "center",
 						}}>
-						<div>
+						<div className="logo-nav" style={{display: "flex"}}>
 							<img
 								width="120px"
 								style={{padding: "10px", borderRadius: "30px"}}
@@ -117,8 +134,13 @@ function Navbar() {
 									fontWeight: 500,
 									letterSpacing: ".3rem",
 									color: "inherit",
+									paddingTop: "20px",
 									textDecoration: "none",
-								}}></Typography>
+									flexDirection: "column",
+								}}>
+								<div>PROD</div>
+								<div>APP</div>
+							</Typography>
 						</div>
 						<div
 							style={{
@@ -259,10 +281,10 @@ function Navbar() {
 									onClose={handleCloseUserMenu}>
 									{settings.map((setting) => (
 										<MenuItem
-											key={setting}
-											onClick={handleCloseUserMenu}>
+											key={setting.option}
+											onClick={setting.action}>
 											<Typography textAlign="center">
-												{setting}
+												{setting.option}
 											</Typography>
 										</MenuItem>
 									))}

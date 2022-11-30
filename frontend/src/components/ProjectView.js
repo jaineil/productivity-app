@@ -27,7 +27,7 @@ const defaultPageBody = {
 	version: "2.25.0",
 };
 
-const ProjectView = ({projectId}) => {
+const ProjectView = ({match}) => {
 	const [projectName, setProjectName] = useState("");
 	const [description, setDescription] = useState("");
 	const [owner, setOwner] = useState([]);
@@ -73,6 +73,8 @@ const ProjectView = ({projectId}) => {
 		setShowModal(false);
 		setProjectName(projectName + " ");
 	};
+
+	const projectId = match?.params?.id;
 
 	const getProjectDetails = async () => {
 		const project = await makeGetRequest(

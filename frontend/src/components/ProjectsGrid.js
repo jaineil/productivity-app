@@ -3,8 +3,8 @@ import Paper from "@mui/material/Paper";
 import Box from "@mui/material/Box";
 import ProjectCard from "./ProjectCard";
 
-const ProjectsGrid = () => {
-	const x = [1, 2, 3, 4, 4, 3, 2, 1, 2, 12];
+const ProjectsGrid = ({projects}) => {
+	console.log(typeof projects);
 	return (
 		<Box
 			sx={{
@@ -16,9 +16,15 @@ const ProjectsGrid = () => {
 					height: "20rem",
 				},
 			}}>
-			{/* <Paper elevation={4} /> */}
-			{x.map((i) => {
-				return <ProjectCard />;
+			{projects?.map((project) => {
+				return (
+					<ProjectCard
+						key={project?.projectId?._id}
+						id={project?.projectId?._id}
+						title={project?.projectId?.name}
+						description={project?.projectId?.description}
+					/>
+				);
 			})}
 		</Box>
 	);
