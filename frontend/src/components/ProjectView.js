@@ -12,6 +12,7 @@ import {ENDPOINT_MAPPINGS} from "../utils/config";
 import {makeGetRequest, makePostRequest} from "../utils/makeRequest";
 import {BsFillPeopleFill} from "react-icons/bs";
 import PageView from "./PageView";
+import {useLocation} from "react-router-dom";
 
 const defaultPageBody = {
 	time: new Date().getTime(),
@@ -27,7 +28,7 @@ const defaultPageBody = {
 	version: "2.25.0",
 };
 
-const ProjectView = ({match}) => {
+const ProjectView = (props) => {
 	const [projectName, setProjectName] = useState("");
 	const [description, setDescription] = useState("");
 	const [owner, setOwner] = useState([]);
@@ -38,6 +39,8 @@ const ProjectView = ({match}) => {
 	const [newPageTitle, setNewPageTitle] = useState("");
 	const [showCollabModal, setShowCollabModal] = useState(false);
 	const [collaboratorEmail, setCollaboratorEmail] = useState("");
+	const location = useLocation();
+	const {projectId} = location.state;
 
 	const handleClose = () => {
 		setShowModal(false);
@@ -74,7 +77,8 @@ const ProjectView = ({match}) => {
 		setProjectName(projectName + " ");
 	};
 
-	const projectId = match?.params?.id;
+	// const projectId = undefined;
+	console.log("PID", projectId);
 
 	const getProjectDetails = async () => {
 		const project = await makeGetRequest(
