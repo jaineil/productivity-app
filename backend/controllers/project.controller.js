@@ -27,10 +27,10 @@ export class ProjectController {
 				newProjectObject.ownerId,
 				{
 					$push: {
-						projects: { projectId: createProjectResponse.id },
+						projects: {projectId: createProjectResponse.id},
 					},
 				},
-				{ session }
+				{session}
 			);
 			console.log(JSON.stringify(addProjectToOwnerResponse));
 
@@ -73,8 +73,8 @@ export class ProjectController {
 
 		try {
 			const response = await Project.updateOne(
-				{ _id: projectId },
-				{ $push: { pages: newPageObject } }
+				{_id: projectId},
+				{$push: {pages: newPageObject}}
 			);
 			console.log(JSON.stringify(response));
 			res.status(200).send(response);
@@ -90,8 +90,8 @@ export class ProjectController {
 
 		try {
 			const response = await Project.aggregate([
-				{ $unwind: "$pages" },
-				{ $match: { "pages._id": mongoose.Types.ObjectId(pageId) } },
+				{$unwind: "$pages"},
+				{$match: {"pages._id": mongoose.Types.ObjectId(pageId)}},
 				{
 					$project: {
 						pages: 1,
@@ -116,7 +116,7 @@ export class ProjectController {
 
 		try {
 			const response = await Project.findOneAndUpdate(
-				{ "pages._id": mongoose.Types.ObjectId(pageId) },
+				{"pages._id": mongoose.Types.ObjectId(pageId)},
 				{
 					$set: {
 						"pages.$[page].title": updatedPageObject.title,
@@ -125,7 +125,7 @@ export class ProjectController {
 				},
 				{
 					arrayFilters: [
-						{ "page._id": mongoose.Types.ObjectId(pageId) },
+						{"page._id": mongoose.Types.ObjectId(pageId)},
 					],
 					new: true,
 				}
@@ -151,9 +151,9 @@ export class ProjectController {
 			session.startTransaction();
 
 			const projectAddedToCollaboratorResponse = await User.updateOne(
-				{ email: collaboratorEmail },
-				{ $push: { projects: { projectId: projectId } } },
-				{ session }
+				{email: collaboratorEmail},
+				{$push: {projects: {projectId: projectId}}},
+				{session}
 			);
 			console.log(JSON.stringify(projectAddedToCollaboratorResponse));
 
@@ -163,7 +163,7 @@ export class ProjectController {
 			const collaboratorId = collaborator.id;
 
 			const collaboratorAddedToProjectResponse = await Project.updateOne(
-				{ _id: projectId },
+				{_id: projectId},
 				{
 					$push: {
 						collaborators: {
@@ -172,7 +172,7 @@ export class ProjectController {
 						},
 					},
 				},
-				{ session }
+				{session}
 			);
 			console.log(JSON.stringify(collaboratorAddedToProjectResponse));
 
@@ -211,11 +211,22 @@ export class ProjectController {
 		const query = req.params.searchQuery;
 		try {
 			const projectsContainsSearchQuery = await Project.find({
-				ownerId: userId,
-				name: {
-					$regex: query,
-					$options: "i",
-				},
+				$or: [
+					{
+						ownerId: userId,
+						name: {
+							$regex: query,
+							$options: "i",
+						},
+					},
+					{
+						"collaborators.userId": userId,
+						name: {
+							$regex: query,
+							$options: "i",
+						},
+					},
+				],
 			});
 			console.log(JSON.stringify(projectsContainsSearchQuery));
 			res.status(200).send(projectsContainsSearchQuery);

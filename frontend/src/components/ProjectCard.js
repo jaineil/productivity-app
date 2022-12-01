@@ -10,23 +10,32 @@ import {Link} from "react-router-dom";
 export default function ProjectCard({id, title, description}) {
 	console.log(id, title, description);
 	return (
-		<Card sx={{maxWidth: 345}}>
+		<Card sx={{maxWidth: 345, minHeight: "100%"}}>
 			<Link
-				style={{textDecoration: "none"}}
+				style={{textDecoration: "none", minHeight: "100%"}}
 				to={`/project/${id}`}
 				state={{projectId: id}}>
-				<CardActionArea>
+				<CardActionArea
+					sx={{
+						minHeight: "100%",
+						display: "flex",
+						flexDirection: "column",
+						justifyContent: "flex-start",
+					}}>
 					<CardMedia
 						component="img"
 						height="140"
 						image="assets/project-cover-default.jpg"
 						alt="green iguana"
 					/>
-					<CardContent>
+					<CardContent sx={{width: "100%"}}>
 						<Typography gutterBottom variant="h5" component="div">
 							{title}
 						</Typography>
-						<Typography variant="body2" color="text.secondary">
+						<Typography
+							variant="body2"
+							color="text.secondary"
+							sx={{wordWrap: "break-word", overflow: "clip"}}>
 							{description}
 						</Typography>
 					</CardContent>

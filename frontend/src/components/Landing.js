@@ -9,13 +9,65 @@ import {makeGetRequest, makePostRequest} from "../utils/makeRequest";
 import {ENDPOINT_MAPPINGS} from "../utils/config";
 import {useCookies} from "react-cookie";
 import toast from "react-hot-toast";
+import SearchIcon from "@mui/icons-material/Search";
+import {styled, alpha} from "@mui/material/styles";
+import InputBase from "@mui/material/InputBase";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
+
+const Search = styled("div")(({theme}) => ({
+	position: "relative",
+	borderRadius: "10px",
+
+	backgroundColor: alpha(theme.palette.common.black, 0.05),
+	"&:hover": {
+		backgroundColor: alpha(theme.palette.common.black, 0.15),
+	},
+	marginLeft: 0,
+	width: "100%",
+	[theme.breakpoints.up("sm")]: {
+		marginLeft: theme.spacing(1),
+		width: "auto",
+	},
+	fontSize: "24px",
+	minHeight: "5rem",
+	minWidth: "35rem",
+}));
+
+const SearchIconWrapper = styled("div")(({theme}) => ({
+	padding: theme.spacing(0, 2),
+	height: "100%",
+	position: "absolute",
+	pointerEvents: "none",
+	display: "flex",
+	alignItems: "center",
+	justifyContent: "center",
+}));
+
+const StyledInputBase = styled(InputBase)(({theme}) => ({
+	color: "inherit",
+	"& .MuiInputBase-input": {
+		padding: theme.spacing(1, 1, 1, 0),
+		// vertical padding + font size from searchIcon
+		paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+		transition: theme.transitions.create("width"),
+		width: "100%",
+		[theme.breakpoints.up("sm")]: {
+			width: "12ch",
+			"&:focus": {
+				width: "20ch",
+			},
+		},
+	},
+}));
 
 const Landing = () => {
 	const [modalShow, setModalShow] = useState(false);
 	const [title, setTitle] = useState();
 	const [description, setDescription] = useState();
-	const [projects, setProjects] = useState([]);
 	const [cookies, setCookie] = useCookies(["userId"]);
+	const [projects, setProjects] = useState([]);
+	const [searchText, setSearchText] = React.useState();
+
 	const handleTitleChange = (e) => {
 		console.log(e.target.value);
 		setTitle(e.target.value);
@@ -39,15 +91,34 @@ const Landing = () => {
 		};
 	}, []);
 
+	// const [cookies, setCookie] = useCookies(["userId"]);
+
 	const getProjects = async () => {
 		const res = await makeGetRequest(ENDPOINT_MAPPINGS.getAllProjects, [
 			cookies.userId,
 		]);
+		console.log("asdads", res);
+
 		if (res) {
-			setProjects(res?.projects);
+			let proj = [];
+			for (let i = 0; i < res?.projects.length; i++) {
+				proj.push((res?.projects)[i].projectId);
+			}
+			setProjects(proj);
 		}
 	};
 
+	const searchProjects = async (searchText) => {
+		const res = await makeGetRequest(ENDPOINT_MAPPINGS.searchProjects, [
+			cookies.userId,
+			searchText,
+		]);
+		console.log(res);
+		if (res) {
+			setProjects(res);
+		}
+		// setProjects(res?.projects);
+	};
 	const createProject = async () => {
 		const res = await makePostRequest(ENDPOINT_MAPPINGS.createProject, {
 			name: title,
@@ -70,6 +141,44 @@ const Landing = () => {
 
 	return (
 		<div className="landing-wrapper container">
+			<div
+				style={{
+					margin: "2px 300px",
+				}}>
+				<Search style={{display: "flex"}}>
+					<SearchIconWrapper>
+						<SearchIcon sx={{width: "40px"}} />
+					</SearchIconWrapper>
+					<StyledInputBase
+						placeholder="Search…"
+						inputProps={{"aria-label": "search"}}
+						sx={{
+							height: "100%",
+							width: "100%",
+							padding: "20px",
+							textAlign: "left",
+							borderRadius: "40px",
+						}}
+						onChange={(e) => {
+							console.log(searchText);
+							setSearchText(e.target.value);
+						}}
+						value={searchText}
+					/>
+					<ArrowForwardIcon
+						sx={{
+							// backgroundColor: "black",
+							fontSize: "30px",
+							marginTop: "25px",
+							marginRight: "20px",
+						}}
+						onClick={(e) => {
+							searchProjects(searchText);
+							setSearchText("");
+						}}
+					/>
+				</Search>
+			</div>
 			<div
 				style={{
 					display: "flex",
