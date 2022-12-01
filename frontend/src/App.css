@@ -65,5 +65,17 @@
 	min-height: 68rem;
 }
 
+.ce-block__content {
+	margin-left: 3%;
+}
+
+.ce-toolbar * {
+	margin-left: 3%;
+}
+
+.ce-settings * {
+	margin-left: 0%;
+}
+
 .grid-wrapper {
 }

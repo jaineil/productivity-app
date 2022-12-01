@@ -12,6 +12,7 @@ import {ENDPOINT_MAPPINGS} from "../utils/config";
 import {makeGetRequest, makePostRequest} from "../utils/makeRequest";
 import Editor from "./Editor";
 import {BsFillPeopleFill} from "react-icons/bs";
+import toast from "react-hot-toast";
 
 const defaultPageBody = {
 	time: new Date().getTime(),
@@ -33,15 +34,12 @@ const PageView = ({activePageId}) => {
 	const [editorValue, setEditorValue] = useState({});
 
 	const updatePageBody = async () => {
-		console.log("UPDATING PAGE");
-		console.log(activePageId);
-		console.log(editorValue);
-		console.log(pageTitle);
 		await makePostRequest(ENDPOINT_MAPPINGS.updatePage, {
 			pageId: activePageId,
 			title: pageTitle,
 			body: JSON.stringify(editorValue),
 		});
+		localStorage.setItem("saveMessage", "Successfully saved");
 		window.location.reload();
 	};
 
@@ -53,6 +51,10 @@ const PageView = ({activePageId}) => {
 			setPageTitle(page[0]["pages"]["title"]);
 			setPageBody(JSON.parse(page[0]["pages"]["body"]));
 			setEditorValue(JSON.parse(page[0]["pages"]["body"]));
+		}
+		if (localStorage.getItem("saveMessage")) {
+			toast.success(localStorage.getItem("saveMessage"));
+			localStorage.removeItem("saveMessage");
 		}
 	};
 

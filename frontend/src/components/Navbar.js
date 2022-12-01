@@ -125,7 +125,7 @@ function Navbar() {
 							<img
 								width="120px"
 								style={{padding: "10px", borderRadius: "30px"}}
-								src="assets/logo-prod-app.png"
+								src="https://uber-eats-prototype.s3.us-west-1.amazonaws.com/logo-prod-app.png"
 								alt="logo"></img>
 
 							<Typography
@@ -262,7 +262,7 @@ function Navbar() {
 										}}>
 										<Avatar
 											alt="User"
-											src="assets/user.png"
+											src="https://uber-eats-prototype.s3.us-west-1.amazonaws.com/user.png"
 											style={{
 												width: "75px",
 												height: "75px",
