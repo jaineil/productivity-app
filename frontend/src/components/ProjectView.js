@@ -13,6 +13,7 @@ import {makeGetRequest, makePostRequest} from "../utils/makeRequest";
 import {BsFillPeopleFill} from "react-icons/bs";
 import PageView from "./PageView";
 import {useLocation} from "react-router-dom";
+import toast from "react-hot-toast";
 
 const defaultPageBody = {
 	time: new Date().getTime(),
@@ -64,6 +65,10 @@ const ProjectView = (props) => {
 			collaboratorEmail: collaboratorEmail,
 			permissions: "all",
 		});
+		toast.success(
+			`Added collaborator ${collaboratorEmail} to project ${projectName}`,
+			{duration: 6000}
+		);
 		setShowCollabModal(false);
 		getCollaborators();
 	};
@@ -73,6 +78,10 @@ const ProjectView = (props) => {
 			title: newPageTitle,
 			body: JSON.stringify(defaultPageBody),
 		});
+		toast.success(
+			`Added new page ${newPageTitle} to project ${projectName}`,
+			{duration: 6000}
+		);
 		setShowModal(false);
 		setProjectName(projectName + " ");
 	};
@@ -135,11 +144,8 @@ const ProjectView = (props) => {
 	return (
 		<Container fluid>
 			<Row>
-				<Col
-					xs={2}
-					className="border-end border-dark border-2 pt-5"
-					style={{height: "100%"}}>
-					<div style={{height: "85vh"}}>
+				<Col xs={2} className="pt-5" style={{height: "100%"}}>
+					<div style={{height: "75vh"}}>
 						<Row className="px-1 border-bottom border-2 mb-3">
 							<p className="text-center display-6">
 								{projectName}
@@ -196,7 +202,7 @@ const ProjectView = (props) => {
 						</Button>
 					</Row>
 				</Col>
-				<Col xs={10}>
+				<Col xs={10} className="border-start border-dark border-2">
 					<PageView activePageId={activePageId} />
 				</Col>
 			</Row>

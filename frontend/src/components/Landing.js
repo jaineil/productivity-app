@@ -8,6 +8,7 @@ import CreateProjectModal from "./CreateProjectModal";
 import {makeGetRequest, makePostRequest} from "../utils/makeRequest";
 import {ENDPOINT_MAPPINGS} from "../utils/config";
 import {useCookies} from "react-cookie";
+import toast from "react-hot-toast";
 
 const Landing = () => {
 	const [modalShow, setModalShow] = useState(false);
@@ -54,7 +55,7 @@ const Landing = () => {
 			ownerId: cookies.userId,
 		});
 
-		console.log(res);
+		toast.success(`Created new project ${title}`);
 
 		setModalShow(false);
 		setTitle("");
