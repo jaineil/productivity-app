@@ -17,5 +17,9 @@ projectRoutes.get(
 	"/view-collaborators/:projectId",
 	projectController.fetchCollaboratorsForProject
 );
+projectRoutes.get(
+	"/search-projects/:ownerId/:searchQuery",
+	projectController.search
+);
 
 export default projectRoutes;
