@@ -99,6 +99,12 @@ function Navbar() {
 		setAnchorElUser(null);
 	};
 
+	React.useEffect(() => {
+		if (!cookies.userId) {
+			navigate("/login");
+			return;
+		}
+	}, []);
 	return (
 		<AppBar
 			position="static"
