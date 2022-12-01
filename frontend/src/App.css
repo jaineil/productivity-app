@@ -38,12 +38,14 @@
 }
 
 .auth-wrapper {
+	background-color: white;
 	width: 40%;
-	margin: 10rem auto;
-	box-shadow: 22px 22px 25px silver;
+	margin-left: auto;
+	margin-right: auto;
+	box-shadow: 7px 7px 25px silver;
 	border: 1px solid silver;
 	font-size: 20px;
-	min-height: 500px;
+	/* min-height: 500px; */
 	border-radius: 20px;
 }
 

@@ -3,24 +3,14 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import {ENDPOINT_MAPPINGS} from "../utils/config";
 import {makePostRequest} from "../utils/makeRequest";
-import toast, {Toaster} from "react-hot-toast";
+import toast from "react-hot-toast";
 // import {useCookies} from "react-cookie";
 import {Link, useNavigate} from "react-router-dom";
 
 const LoginForm = () => {
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
-	// const [cookies, setCookie] = useCookies(["name"]);
 	const navigate = useNavigate();
-
-	const success = async (msg) =>
-		toast.success(msg, {
-			duration: 6000,
-		});
-	const error = async (msg) =>
-		toast.error(msg, {
-			duration: 6000,
-		});
 
 	const loginUser = async () => {
 		const user = await makePostRequest(ENDPOINT_MAPPINGS.login, {
@@ -29,11 +19,10 @@ const LoginForm = () => {
 		});
 
 		if (user) {
-			success("Sucessfully Authenticated");
-			// setCookie("userId", user.userId);
+			toast.success("Sucessfully Authenticated");
 			navigate("/");
 		} else {
-			error("Incorrect Credentials");
+			toast.error("Incorrect Credentials");
 		}
 	};
 
@@ -47,7 +36,6 @@ const LoginForm = () => {
 
 	return (
 		<div className="login-wrapper">
-			<Toaster position="top-center" reverseOrder={false} />
 			<Form>
 				<Form.Group className="mb-3" controlId="loginformBasicEmail">
 					<Form.Label>Email address</Form.Label>
