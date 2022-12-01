@@ -11,7 +11,10 @@ export default function ProjectCard({id, title, description}) {
 	console.log(id, title, description);
 	return (
 		<Card sx={{maxWidth: 345}}>
-			<Link to={`/project/${id}`}>
+			<Link
+				style={{textDecoration: "none"}}
+				to={`/project/${id}`}
+				state={{projectId: id}}>
 				<CardActionArea>
 					<CardMedia
 						component="img"
@@ -29,11 +32,7 @@ export default function ProjectCard({id, title, description}) {
 					</CardContent>
 				</CardActionArea>
 			</Link>
-			<CardActions>
-				<Button size="small" color="primary">
-					Share
-				</Button>
-			</CardActions>
+			<CardActions></CardActions>
 		</Card>
 	);
 }
