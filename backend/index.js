@@ -8,7 +8,7 @@ import projectRoutes from "./routes/project.routes.js";
 
 const user = "testUser";
 const password = "testPass";
-const frontendIP = "localhost";
+const frontendIP = "13.57.31.50";
 const sessionSecretKey = "cmpe280_term_project";
 const uri = `mongodb+srv://${user}:${password}@cluster0.xljkdkp.mongodb.net/productivityApp?retryWrites=true&w=majority`;
 

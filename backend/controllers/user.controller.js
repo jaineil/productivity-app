@@ -34,14 +34,15 @@ export class UserController {
 			} else {
 				const userId = response.id;
 				console.log(userId);
-				res.cookie("userId", userId, {
-					maxAge: 3600000,
-					httpOnly: false,
-					path: "/",
-				});
+				// res.cookie("userId", userId, {
+				// 	maxAge: 3600000,
+				// 	httpOnly: false,
+				// 	path: "/",
+				// });
 				req.session.user = userId;
 				res.status(200).send({
 					validCredentials: true,
+					userId: userId,
 				});
 			}
 		} catch (err) {
