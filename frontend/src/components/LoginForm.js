@@ -4,12 +4,14 @@ import Form from "react-bootstrap/Form";
 import {ENDPOINT_MAPPINGS} from "../utils/config";
 import {makePostRequest} from "../utils/makeRequest";
 import toast from "react-hot-toast";
-// import {useCookies} from "react-cookie";
+import {useCookies} from "react-cookie";
 import {Link, useNavigate} from "react-router-dom";
 
 const LoginForm = () => {
 	const [email, setEmail] = useState();
 	const [password, setPassword] = useState();
+	const [cookies, setCookie] = useCookies();
+
 	const navigate = useNavigate();
 
 	const loginUser = async () => {
@@ -19,6 +21,7 @@ const LoginForm = () => {
 		});
 
 		if (user) {
+			setCookie("userId", user.userId);
 			toast.success("Sucessfully Authenticated");
 			navigate("/");
 		} else {
