@@ -12,4 +12,5 @@ export const ENDPOINT_MAPPINGS = {
 	updatePage: "/update-page",
 	addCollaborator: "/add-collaborator",
 	viewCollaborators: "/view-collaborators",
+	searchProjects: "/search-projects",
 };

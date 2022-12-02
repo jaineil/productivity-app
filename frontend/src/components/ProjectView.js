@@ -141,6 +141,7 @@ const ProjectView = (props) => {
 	}, [projectName]);
 	console.log("Rendering [ProjectView]");
 	// console.log(activePageId);
+
 	return (
 		<Container fluid>
 			<Row>
@@ -150,7 +151,15 @@ const ProjectView = (props) => {
 							<p className="text-center display-6">
 								{projectName}
 							</p>
-							<p className="text-center fs-6">{description}</p>
+							<p
+								className="text-center fs-6"
+								style={{
+									overflow: "hidden",
+									wordWrap: "break-word",
+									height: "100px",
+								}}>
+								{description}
+							</p>
 							<p className="text-center fs-6">
 								<Dropdown>
 									<Dropdown.Toggle
@@ -202,7 +211,10 @@ const ProjectView = (props) => {
 						</Button>
 					</Row>
 				</Col>
-				<Col xs={10} className="border-start border-dark border-2">
+				<Col
+					xs={10}
+					className="border-start border-dark border-2"
+					style={{minHeight: "90vh"}}>
 					<PageView activePageId={activePageId} />
 				</Col>
 			</Row>

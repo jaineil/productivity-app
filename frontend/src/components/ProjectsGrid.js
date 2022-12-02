@@ -4,7 +4,7 @@ import Box from "@mui/material/Box";
 import ProjectCard from "./ProjectCard";
 
 const ProjectsGrid = ({projects}) => {
-	console.log(typeof projects);
+	// console.log(typeof projects);
 	return (
 		<Box
 			sx={{
@@ -19,10 +19,10 @@ const ProjectsGrid = ({projects}) => {
 			{projects?.map((project) => {
 				return (
 					<ProjectCard
-						key={project?.projectId?._id}
-						id={project?.projectId?._id}
-						title={project?.projectId?.name}
-						description={project?.projectId?.description}
+						key={project?._id}
+						id={project?._id}
+						title={project?.name}
+						description={project?.description}
 					/>
 				);
 			})}

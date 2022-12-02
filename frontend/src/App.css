@@ -42,7 +42,7 @@
 	width: 40%;
 	margin-left: auto;
 	margin-right: auto;
-	box-shadow: 7px 7px 25px silver;
+	box-shadow: 7px 7px 25px black;
 	border: 1px solid silver;
 	font-size: 20px;
 	/* min-height: 500px; */
@@ -75,7 +75,4 @@
 
 .ce-settings * {
 	margin-left: 0%;
-}
-
-.grid-wrapper {
 }
